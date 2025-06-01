@@ -1,0 +1,127 @@
+﻿@page
+@model Uspevaemost_client.Pages.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Форма отчета</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card shadow-lg w-100" style="max-width: 700px;">
+            <div class="card-header bg-primary text-white justify-content-center">
+                <h4 class="mb-0 text-center">Успеваемость</h4>
+            </div>
+            <p>Добро пожаловать, @Model.Username</p>
+
+            <div class="card-body">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label">Курсы:</label>
+                        <div>
+                            @for (int i = 1; i <= 7; i++)
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="Kurs" value="@i" id="kurs@i" />
+                                    <label class="form-check-label" for="kurs@i">@i</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Уровни образования:</label>
+                        <div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Urovni" value="СПО-Базовый уровень (на базе 11 кл)" id="urovni1" />
+                                <label class="form-check-label" for="urovni1">СПО</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Urovni" value="ВО-Бакалавры" id="urovni2" />
+                                <label class="form-check-label" for="urovni2">Бакалавриат</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Urovni" value="ВО-Специалисты" id="urovni3" />
+                                <label class="form-check-label" for="urovni3">Специалитет</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Urovni" value="ВО-Магистры" id="urovni4" />
+                                <label class="form-check-label" for="urovni4">Магистратура</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Urovni" value="Ординатура" id="urovni5" />
+                                <label class="form-check-label" for="urovni5">Ординатура</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Urovni" value="Аспирантура" id="urovni6" />
+                                <label class="form-check-label" for="urovni6">Аспирантура</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Формы обучения:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="FormyObucheniya" value="Очная форма" id="forma1" />
+                            <label class="form-check-label" for="forma1">Очная</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="FormyObucheniya" value="Заочная форма" id="forma2" />
+                            <label class="form-check-label" for="forma2">Заочная</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="FormyObucheniya" value="Очно-заочная" id="forma2" />
+                            <label class="form-check-label" for="forma2">Очно-заочная</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Года:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="Goda" value="2023-2024" id="year1" />
+                            <label class="form-check-label" for="year1">2023–2024</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="Goda" value="2024-2025" id="year2" />
+                            <label class="form-check-label" for="year2">2024–2025</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="Goda" value="2025-2026" id="year2" />
+                            <label class="form-check-label" for="year2">2025–2026</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Семестры:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="Semestry" value="1" id="sem1" />
+                            <label class="form-check-label" for="sem1">1</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="Semestry" value="2" id="sem2" />
+                            <label class="form-check-label" for="sem2">2</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 bg-primary">Скачать</button>
+                </form>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-3">
+                        @Model.ErrorMessage
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
