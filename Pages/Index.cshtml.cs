@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -11,15 +12,16 @@ namespace Uspevaemost_client.Pages
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<IndexModel> _logger;
         public string? Username { get; private set; }
-
+        private readonly string _apiBaseUrl;
         public void OnGet()
         {
             Username = User.Identity?.Name; // ← тут будет DOMAIN\username
         }
-        public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger)
+        public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger, IOptions<ApiSettings> apiSettings)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _apiBaseUrl = apiSettings.Value.BaseUrl;
         }
 
         [BindProperty]
@@ -69,7 +71,7 @@ namespace Uspevaemost_client.Pages
 
             try
             {
-                var response = await client.PostAsync("http://10.12.9.122:5000/Excel/download", content);
+                var response = await client.PostAsync($"{_apiBaseUrl}/Excel/download", content);
             
                 if (response.IsSuccessStatusCode)
                 {
