@@ -10,9 +10,7 @@ namespace Uspevaemost_client
 
             builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
                 .AddNegotiate();
-            builder.Services.Configure<ApiSettings>(
-     builder.Configuration.GetSection("ApiSettings"));
-
+           
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Services.AddHttpClient("WithWindowsAuth")
