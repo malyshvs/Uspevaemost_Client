@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.Negotiate;
 
 namespace Uspevaemost_client
 {
@@ -7,14 +6,11 @@ namespace Uspevaemost_client
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-                .AddNegotiate();
+            Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Запуск: "+ string.Join(",",args));
+          
             builder.Services.Configure<ApiSettings>(
      builder.Configuration.GetSection("ApiSettings"));
 
-            builder.Logging.ClearProviders();
-            builder.Logging.AddConsole();
             builder.Services.AddHttpClient("WithWindowsAuth")
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
@@ -43,6 +39,7 @@ namespace Uspevaemost_client
             app.MapRazorPages();
 
             app.Run();
+            Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Клиент запущен");
         }
     }
 }

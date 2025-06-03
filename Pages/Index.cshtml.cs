@@ -15,13 +15,16 @@ namespace Uspevaemost_client.Pages
         private readonly string _apiBaseUrl;
         public void OnGet()
         {
-            Username = User.Identity?.Name; // ← тут будет DOMAIN\username
+            Username = User.Identity?.Name;
+            Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Подключен пользователь: {Username}");
         }
         public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger, IOptions<ApiSettings> apiSettings)
         {
+
             _httpClientFactory = httpClientFactory;
-            _logger = logger;
+            
             _apiBaseUrl = apiSettings.Value.BaseUrl;
+            Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Определен url сервера: {_apiBaseUrl}");
         }
 
         [BindProperty]
@@ -39,21 +42,17 @@ namespace Uspevaemost_client.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            _logger.LogInformation("OnPostAsync вызван");
-            _logger.LogInformation("Kurs: {Kurs}", string.Join(", ", Kurs ?? new()));
-            _logger.LogInformation("Urovni: {Urovni}", string.Join(", ", Urovni ?? new()));
-            _logger.LogInformation("FormyObucheniya: {FormyObucheniya}", string.Join(", ", FormyObucheniya ?? new()));
-            _logger.LogInformation("Goda: {Goda}", string.Join(", ", Goda ?? new()));
-            _logger.LogInformation("Semestry: {Semestry}", string.Join(", ", Semestry ?? new()));
 
-            System.Diagnostics.Debug.WriteLine(User.Identity?.Name);
+
+            string name = User.Identity?.Name;
             var request = new
             {
                 Kurs,
                 Urovni,
                 FormyObucheniya,
                 Goda,
-                Semestry
+                Semestry,
+                name
             };
 
             var client = _httpClientFactory.CreateClient("WithWindowsAuth");
@@ -65,16 +64,17 @@ namespace Uspevaemost_client.Pages
             };
 
             var json = JsonSerializer.Serialize(request, options);
-            _logger.LogInformation("Сформированный JSON: {Json}", json);
-            _logger.LogInformation(User.Identity?.Name);
+            
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
+            Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Сформировано тело запроса json: {json}");
             try
             {
+                Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Отпарвляю запрос к API: {_apiBaseUrl}/Excel/download");
                 var response = await client.PostAsync($"{_apiBaseUrl}/Excel/download", content);
-            
+                
                 if (response.IsSuccessStatusCode)
                 {
+                    Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Получен ответ: {response.StatusCode}");
                     var fileBytes = await response.Content.ReadAsByteArrayAsync();
                     return File(fileBytes,
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -82,13 +82,14 @@ namespace Uspevaemost_client.Pages
                 }
                 else
                 {
-                    ErrorMessage = $"Ошибка: {response.StatusCode}";
+                    Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Получен ответ: {response.StatusCode}");
+                    ErrorMessage = $"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Ошибка: {response.StatusCode}";
                     return Page();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при отправке запроса");
+                Logger.Log($"{DateTime.Now.ToString("yyyy-mm-dd-h-m-s")} Ошибка отправки: {ex}");
                 ErrorMessage = "Ошибка при подключении к API.";
                 return Page();
             }
