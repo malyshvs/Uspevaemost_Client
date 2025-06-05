@@ -9,7 +9,6 @@ namespace Uspevaemost_client
   
         private string _createToken(string name,string con)
         {
-            Logger.Log(con);
             using var conn = new SqlConnection(con);
             using var cmd = new SqlCommand("publicbase.dbo.CreateUserToken", conn)
             {
