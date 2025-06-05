@@ -10,7 +10,8 @@ namespace Uspevaemost_client
           
             builder.Services.Configure<ApiSettings>(
      builder.Configuration.GetSection("ApiSettings"));
-
+            builder.Services.Configure<ConnectionStrings>(
+builder.Configuration.GetSection("ConnectionStrings"));
             builder.Services.AddHttpClient("WithWindowsAuth")
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
@@ -19,7 +20,7 @@ namespace Uspevaemost_client
         });
 
             builder.Services.AddRazorPages();
-
+            builder.Services.AddTransient<AuthMiddleWare>();
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
